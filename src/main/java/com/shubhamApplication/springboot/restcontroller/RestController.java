@@ -16,7 +16,7 @@ public class RestController {
         return "Ram-ram bhai sareya na";
     }
 
-    Map<Integer, Employee> employeelist = new HashMap<>();
+    Map<String, Employee> employeelist = new HashMap<>();
 
     @GetMapping("/getall")
     public List<Employee> getallemployee(){
@@ -37,8 +37,10 @@ public class RestController {
 
     @DeleteMapping("/remove/{id}")
     public Employee deleteEmployeebyID(@PathVariable int id){
+
         return employeelist.remove(id);
     }
+
     @PutMapping("/update/{id}")
     public String updateEmployeebyId(@PathVariable int id,@RequestBody Employee emp){
         employeelist.put(emp.getId(),emp);
