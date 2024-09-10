@@ -1,5 +1,6 @@
 package com.shubhamApplication.springboot.restcontroller;
 import com.shubhamApplication.springboot.entity.Employee;
+import org.bson.types.ObjectId;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class RestController {
         return "Ram-ram bhai sareya na";
     }
 
-    Map<String, Employee> employeelist = new HashMap<>();
+    Map<ObjectId, Employee> employeelist = new HashMap<>();
 
     @GetMapping("/getall")
     public List<Employee> getallemployee(){

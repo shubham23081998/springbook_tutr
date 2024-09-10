@@ -1,14 +1,16 @@
 package com.shubhamApplication.springboot.entity;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
-@Document (collation="employee_detail")
+@Document (collection ="employee_detail")
 public class Employee {
     @Id
-    public String id;
+    public ObjectId id;
     public String name;
     public int salary;
     public String city;
@@ -22,11 +24,11 @@ public class Employee {
     }
 
 
-    public String getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
     public String getName() {
