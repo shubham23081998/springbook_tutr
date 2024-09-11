@@ -4,6 +4,8 @@ import com.shubhamApplication.springboot.entity.Employee;
 import com.shubhamApplication.springboot.service.EmployeeService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,36 +20,68 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
     @PostMapping("/create")
-    public String createEmployee(@RequestBody Employee emp){
-        employeeService.saveEntry(emp);
-        return "record saved successfully";
+    public ResponseEntity<Employee>createEmployee(@RequestBody Employee emp){
+        try{
+            employeeService.saveEntry(emp);
+            return new ResponseEntity<>(emp, HttpStatus.CREATED);
+        }catch(Exception e){
+            return new ResponseEntity<>(emp, HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @GetMapping("/getall")
-    public List<Employee> getAllEmployee(){
-        return employeeService.getall();
+    public ResponseEntity<?> getAllEmployee(){
+        List<Employee> all= employeeService.getall();
+        if(all!=null && !all.isEmpty()){
+            return new ResponseEntity<>(all, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
     @GetMapping("/getbyId/{id}")
-    public Employee getById(@PathVariable ObjectId id){
-        return employeeService.getbyId(id).orElse(null);
+    public ResponseEntity<?> getById(@PathVariable ObjectId id) {
+        Optional<Employee> employeeOp = employeeService.getbyId(id);
+        if (employeeOp.isPresent()) {
+            return new ResponseEntity<>(employeeOp.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
     @DeleteMapping("/delete/{id}")
-    public String deleteById(@PathVariable ObjectId id){
+    public ResponseEntity<?> deleteById(@PathVariable ObjectId id){
         employeeService.deletebyId(id);
-        return "delete successfully";
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
     }
     @PutMapping("/update/{id}")
-    public String updateEmployee(@RequestBody Employee emp,@PathVariable ObjectId id){
-        Employee oldemp=employeeService.getbyId(id).orElse(null);
-        if(oldemp.getName()!=null) {
-            oldemp.setName(emp.getName());
-        }
-        if( oldemp.getSalary() !=0)
-        {
-        oldemp.setSalary(emp.getSalary());
-        }
-        employeeService.saveEntry(oldemp);
-        return "update successfully";
+    public ResponseEntity<?> updateEmployee(@RequestBody Employee emp,@PathVariable ObjectId id){
+       try {
+               Optional<Employee> employeeOp = employeeService.getbyId(id);
+               Employee oldemp = employeeOp.get();
+               if (employeeOp.isPresent()) {
+                   if (oldemp.getName() != null && !oldemp.getName().isEmpty()) {
+                       oldemp.setName(emp.getName());
+                   } else {
+                       oldemp.setName(oldemp.getName());
+                   }
+                   if (oldemp.getSalary() != 0) {
+                       oldemp.setSalary(emp.getSalary());
+                   } else {
+                       oldemp.setSalary(oldemp.getSalary());
+                   }
+                   employeeService.saveEntry(oldemp);
+
+                   return new ResponseEntity<>(oldemp, HttpStatus.CREATED);
+               }else{
+                   return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+               }
+       }catch(RuntimeException e){
+               return new ResponseEntity<>(emp, HttpStatus.BAD_REQUEST);
+           }
+
     }
 
 }
+
+
