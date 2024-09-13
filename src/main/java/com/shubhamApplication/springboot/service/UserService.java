@@ -30,9 +30,12 @@ public class UserService {
     public void deletebyId(ObjectId id) {
         userRepository.deleteById(id);
     }
-//    public  User findByUserName(String username){
-//        System.out.print("till herer2");
-//        return userRepository.findByUserName(username);
-//    }
+    public  User findByUserName(String username){
+        System.out.print("till herer2");
+        return userRepository.findByUserName(username);
+    }
+
+
+
 
 }

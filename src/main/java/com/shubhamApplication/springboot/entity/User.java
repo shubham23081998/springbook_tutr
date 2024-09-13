@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection ="user")
@@ -16,11 +17,7 @@ public class User {
     private ObjectId id;
     @Indexed(unique = true)
     @NonNull
-    private String username;
-    @NonNull
-    private String password;
-    @DBRef
-    private List<Employee> Employeee;
+    private String userName;
 
     public ObjectId getId() {
         return id;
@@ -30,19 +27,34 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return username;
+    public @NonNull String getUsername() {
+        return userName;
     }
 
-    public void setName(String username) {
-        this.username = username;
+    public void setUsername(@NonNull String userName) {
+        this.userName = userName;
     }
 
-    public String getPassword() {
+    public @NonNull String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(@NonNull String password) {
         this.password = password;
     }
+
+    public List<Employee> getEmployeee() {
+        return Employeee;
+    }
+
+    public void setEmployeee(List<Employee> employeee) {
+        Employeee = employeee;
+    }
+
+    @NonNull
+    private String password;
+    @DBRef
+    private List<Employee> Employeee=  new ArrayList<>();
+
+
 }

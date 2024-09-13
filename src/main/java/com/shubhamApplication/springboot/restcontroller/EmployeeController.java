@@ -1,6 +1,7 @@
 package com.shubhamApplication.springboot.restcontroller;
 
 import com.shubhamApplication.springboot.entity.Employee;
+import com.shubhamApplication.springboot.entity.User;
 import com.shubhamApplication.springboot.service.EmployeeService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
     @PostMapping("/create")
-    public ResponseEntity<Employee>createEmployee(@RequestBody Employee emp){
+    public ResponseEntity<Employee>createEmployee(@RequestBody Employee emp,User user){
         try{
             employeeService.saveEntry(emp);
             return new ResponseEntity<>(emp, HttpStatus.CREATED);

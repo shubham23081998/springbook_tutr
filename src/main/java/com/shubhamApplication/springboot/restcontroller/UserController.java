@@ -44,25 +44,25 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-//    @DeleteMapping("/delete/{id}")
-//    public ResponseEntity<?> deleteById(@PathVariable ObjectId id){
-//        userService.deletebyId(id);
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//
-//    }
-//    @PutMapping("/update/{username}")
-//    public ResponseEntity<?> updateUser(@RequestBody User user,@PathVariable String username){
-//        User olduser = userService.findByUserName(username);
-//
-//        System.out.print("till herer1");
-//
-//        if(olduser !=null) {
-//            olduser.setName(user.getName());
-//            olduser.setPassword(user.getPassword());
-//            userService.saveEntry(olduser);
-//            return new ResponseEntity<>(olduser, HttpStatus.OK);
-//        }else{
-//            return new ResponseEntity<>(olduser, HttpStatus.NOT_FOUND);
-//        }
-//    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable ObjectId id){
+        userService.deletebyId(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
+    @PutMapping("/update/{username}")
+    public ResponseEntity<?> updateUser(@RequestBody User user,@PathVariable String username){
+        User olduser = userService.findByUserName(username);
+
+        System.out.print("till herer1");
+
+        if(olduser !=null) {
+            olduser.setUsername(user.getUsername());
+            olduser.setPassword(user.getPassword());
+            userService.saveEntry(olduser);
+            return new ResponseEntity<>(olduser, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(olduser, HttpStatus.NOT_FOUND);
+        }
+    }
 }
