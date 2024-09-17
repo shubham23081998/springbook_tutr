@@ -56,5 +56,15 @@ public class User {
     @DBRef
     private List<Employee> Employeee=  new ArrayList<>();
 
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
+    private List<String> roles = new ArrayList<>();
+
 
 }

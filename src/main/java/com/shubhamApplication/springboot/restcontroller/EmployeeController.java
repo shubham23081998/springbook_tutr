@@ -3,6 +3,7 @@ package com.shubhamApplication.springboot.restcontroller;
 import com.shubhamApplication.springboot.entity.Employee;
 import com.shubhamApplication.springboot.entity.User;
 import com.shubhamApplication.springboot.service.EmployeeService;
+import com.shubhamApplication.springboot.service.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,20 +21,26 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
-    @PostMapping("/create")
-    public ResponseEntity<Employee>createEmployee(@RequestBody Employee emp,User user){
+    @Autowired
+    private UserService userservice;
+    @PostMapping("/create/{username}")
+    public ResponseEntity<Employee>createEmployee(@RequestBody Employee emp,@PathVariable String username){
         try{
-            employeeService.saveEntry(emp);
+
+            employeeService.saveEntry(emp,username);
             return new ResponseEntity<>(emp, HttpStatus.CREATED);
-        }catch(Exception e){
+        }catch(Exception ex){
             return new ResponseEntity<>(emp, HttpStatus.BAD_REQUEST);
         }
 
     }
 
-    @GetMapping("/getall")
-    public ResponseEntity<?> getAllEmployee(){
-        List<Employee> all= employeeService.getall();
+    @GetMapping("getall/{username}")
+    public ResponseEntity<?> getAllEmployee(@PathVariable String username){
+        User user = userservice.findByUserName(username);
+
+        List<Employee> all= user.getEmployeee();
+//        List<Employee> all= employeeService.getall();
         if(all!=null && !all.isEmpty()){
             return new ResponseEntity<>(all, HttpStatus.OK);
         }else{
@@ -49,14 +56,15 @@ public class EmployeeController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable ObjectId id){
-        employeeService.deletebyId(id);
+    @DeleteMapping("/delete/{username}/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable ObjectId id,@PathVariable String username){
+
+        employeeService.deletebyId(id,username);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateEmployee(@RequestBody Employee emp,@PathVariable ObjectId id){
+    @PutMapping("/update/{username}/{id}")
+    public ResponseEntity<?> updateEmployee(@RequestBody Employee emp,@PathVariable ObjectId id,@PathVariable String username){
        try {
                Optional<Employee> employeeOp = employeeService.getbyId(id);
                Employee oldemp = employeeOp.get();
@@ -71,7 +79,8 @@ public class EmployeeController {
                    } else {
                        oldemp.setSalary(oldemp.getSalary());
                    }
-                   employeeService.saveEntry(oldemp);
+
+                   employeeService.save(oldemp);
 
                    return new ResponseEntity<>(oldemp, HttpStatus.CREATED);
                }else{

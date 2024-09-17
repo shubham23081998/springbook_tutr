@@ -7,6 +7,8 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,11 +22,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/create")
-    public ResponseEntity<User> createUser(@RequestBody User user){
-        userService.saveEntry(user);
-       return new ResponseEntity<>(user,HttpStatus.CREATED);
-    }
+
 
     @GetMapping("/getall")
     public ResponseEntity<?> getAllUser(){
@@ -50,19 +48,16 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
-    @PutMapping("/update/{username}")
-    public ResponseEntity<?> updateUser(@RequestBody User user,@PathVariable String username){
-        User olduser = userService.findByUserName(username);
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUser(@RequestBody User user){
+       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+       String username= authentication.getName();
+       User userindb = userService.findByUserName(username);
 
-        System.out.print("till herer1");
-
-        if(olduser !=null) {
-            olduser.setUsername(user.getUsername());
-            olduser.setPassword(user.getPassword());
-            userService.saveEntry(olduser);
-            return new ResponseEntity<>(olduser, HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(olduser, HttpStatus.NOT_FOUND);
-        }
+            userindb.setUsername(user.getUsername());
+            userindb.setPassword(user.getPassword());
+            userService.saveEntry(userindb);
+            return new ResponseEntity<>(userindb,HttpStatus.OK);
     }
+
 }
